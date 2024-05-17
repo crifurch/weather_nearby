@@ -20,7 +20,7 @@ class WeatherRepository {
       );
 
       var handledResponse = HandledResponse.fromDioResult(response);
-      if (handledResponse.isSuccess && response.data['cod'] != 200) {
+      if (handledResponse.isSuccess && response.data['cod'] != '200') {
         handledResponse = ForbiddenError();
       }
       return ComplexResponse.converted(
@@ -45,7 +45,7 @@ class WeatherRepository {
         queryParameters: requestParam.toMap(),
       );
       var handledResponse = HandledResponse.fromDioResult(response);
-      if (handledResponse.isSuccess && response.data['cod'] != 200) {
+      if (handledResponse.isSuccess && response.data['cod'] != '200') {
         handledResponse = ForbiddenError();
       }
       return ComplexResponse.converted(

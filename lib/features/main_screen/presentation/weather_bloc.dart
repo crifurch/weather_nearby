@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:weather_nearby/core/mapper/data_mapper.dart';
 import 'package:weather_nearby/features/data/models/requesting_location.dart';
@@ -36,16 +37,23 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         RequestingLocation(
           location: 'Минск',
         );
-    emit(state.copyWith(isLoading: state.requestingLocation != requestingLocation));
-    await _updateCurrentWeather(emit);
+    emit(state.copyWith(
+      isLoading: state.requestingLocation != requestingLocation,
+      requestingLocation: requestingLocation,
+    ));
     final forecastResponse = await _weatherRepository.getForecast(
       _weatherRequestParamMapper.mapToSecond(requestingLocation),
     );
     if (forecastResponse.isSuccess) {
-      emit(state.copyWith(forecastWeather: forecastResponse.castedData!));
+      final forecast = forecastResponse.castedData!;
+      final groupListsBy =
+          forecast.groupListsBy<int>((element) => element.dateTime.difference(DateTime.timestamp()).inDays);
+      emit(state.copyWith(forecastWeather: groupListsBy));
     }
-
-    emit(state.copyWith(isLoading: false));
+    await _updateCurrentWeather(emit);
+    emit(state.copyWith(
+      isLoading: false,
+    ));
   }
 
   Future<void> _updateCurrentWeather(Emitter<WeatherState> emit) async {

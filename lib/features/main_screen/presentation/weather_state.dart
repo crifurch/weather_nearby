@@ -5,8 +5,11 @@ class WeatherState with _$WeatherState {
   const factory WeatherState({
     @Default(false) bool isLoading,
     WeatherData? currentWeather,
-    @Default([])
-    List<WeatherData> forecastWeather,
+    @Default({}) Map<int, List<WeatherData>> forecastWeather,
     RequestingLocation? requestingLocation,
   }) = _WeatherState;
+}
+
+extension WeatherStateExtension on WeatherState {
+  int get forecastDays => forecastWeather.keys.length;
 }

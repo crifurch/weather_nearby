@@ -1,15 +1,18 @@
 // ignore_for_file: type_annotate_public_apis
 
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:weather_nearby/core/localization/country_strings.dart';
+import 'package:weather_nearby/core/localization/date_time_formats.dart';
 import 'package:weather_nearby/core/localization/string_provider.dart';
 
 class TranslationService extends InheritedWidget {
   final CountryStrings _countryStrings;
   final void Function(CountryStrings) _onCountryStringsChanged;
   final StringProvider _stringProvider;
+  final CustomDateFormat _dateFormat;
 
-  const TranslationService({
+  TranslationService({
     required CountryStrings countryStrings,
     required void Function(CountryStrings) onCountryStringsChanged,
     required StringProvider stringProvider,
@@ -17,7 +20,8 @@ class TranslationService extends InheritedWidget {
     super.key,
   })  : _countryStrings = countryStrings,
         _onCountryStringsChanged = onCountryStringsChanged,
-        _stringProvider = stringProvider;
+        _stringProvider = stringProvider,
+        _dateFormat = CustomDateFormat(countryStrings.code);
 
   static TranslationService of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<TranslationService>()!;
@@ -28,6 +32,8 @@ class TranslationService extends InheritedWidget {
   StringProvider get stringProvider => _stringProvider;
 
   CountryStrings get countryStrings => _countryStrings;
+
+  CustomDateFormat get dateFormat => _dateFormat;
 
   set countryStrings(CountryStrings countryStrings) {
     _onCountryStringsChanged(countryStrings);
@@ -60,6 +66,7 @@ class _TranslationServiceProviderState extends State<TranslationServiceProvider>
     super.initState();
     _countryStrings = widget.initialTranslations;
     widget.stringProvider.countryStrings = _countryStrings;
+    initializeDateFormatting(_countryStrings.code);
   }
 
   @override
@@ -70,7 +77,8 @@ class _TranslationServiceProviderState extends State<TranslationServiceProvider>
         child: widget.child,
       );
 
-  void _setCountryStrings(CountryStrings countryStrings) {
+  Future<void> _setCountryStrings(CountryStrings countryStrings) async {
+    await initializeDateFormatting(_countryStrings.code);
     setState(() {
       widget.stringProvider.countryStrings = countryStrings;
       _countryStrings = countryStrings;
@@ -79,9 +87,11 @@ class _TranslationServiceProviderState extends State<TranslationServiceProvider>
 }
 
 extension BuildContextStringProvider on BuildContext {
-  CountryStrings countryStrings() => TranslationService.of(this).countryStrings;
+  CountryStrings get countryStrings => TranslationService.of(this).countryStrings;
 
   StringProvider get stringProvider => TranslationService.of(this).stringProvider;
 
-  String translate(String key, [var args]) => countryStrings().translate(key, args);
+  CustomDateFormat get dateFormatter => TranslationService.of(this).dateFormat;
+
+  String translate(String key, [var args]) => countryStrings.translate(key, args);
 }
