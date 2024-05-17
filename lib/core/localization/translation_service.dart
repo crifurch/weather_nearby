@@ -1,8 +1,8 @@
 // ignore_for_file: type_annotate_public_apis
 
 import 'package:flutter/material.dart';
-import 'package:whether_nearby/core/localization/country_strings.dart';
-import 'package:whether_nearby/core/localization/string_provider.dart';
+import 'package:weather_nearby/core/localization/country_strings.dart';
+import 'package:weather_nearby/core/localization/string_provider.dart';
 
 class TranslationService extends InheritedWidget {
   final CountryStrings _countryStrings;

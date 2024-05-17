@@ -1,4 +1,4 @@
-name: whether_nearby
+name: weather_nearby
 description: "Show weather in your city"
 publish_to: 'none'
 version: 1.0.0+1

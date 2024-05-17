@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:whether_nearby/core/localization/country_strings.dart';
+import 'package:weather_nearby/core/localization/country_strings.dart';
 
 enum LocalizationsEnum {
   en,

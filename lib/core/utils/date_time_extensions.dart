@@ -1,0 +1,1 @@
+DateTime fromSecondsSinceEpochUtc(int seconds) => DateTime.fromMillisecondsSinceEpoch(seconds*1000, isUtc: true);
