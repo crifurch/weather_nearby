@@ -1,18 +1,15 @@
 class WeatherRequestParam {
-  final String? _query;
-  final double? _lat;
-  final double? _lon;
-  final int? _cityId;
+  final String? query;
+  final double? lat;
+  final double? lon;
+  final int? cityId;
 
   const WeatherRequestParam._({
-    String? query,
-    double? lat,
-    double? lon,
-    int? cityId,
-  })  : _query = query,
-        _lat = lat,
-        _lon = lon,
-        _cityId = cityId;
+    this.query,
+    this.lat,
+    this.lon,
+    this.cityId,
+  });
 
   factory WeatherRequestParam.query({
     required String query,
@@ -20,8 +17,8 @@ class WeatherRequestParam {
       WeatherRequestParam._(query: query);
 
   factory WeatherRequestParam.coords({
-    required double? lat,
-    required double? lon,
+    required double lat,
+    required double lon,
   }) =>
       WeatherRequestParam._(
         lat: lat,
@@ -36,9 +33,10 @@ class WeatherRequestParam {
       );
 
   Map<String, dynamic> toMap() => <String, dynamic>{
-        if (_query != null) 'q': _query,
-        if (_lat != null) 'lat': _lat,
-        if (_lon != null) 'lon': _lon,
-        if (_cityId != null) 'id': _cityId,
+        if (query != null) 'q': query,
+        if (lat != null) 'lat': lat,
+        if (lon != null) 'lon': lon,
+        if (cityId != null) 'id': cityId,
       };
+
 }

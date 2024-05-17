@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:weather_nearby/core/http/response/complex_response.dart';
 import 'package:weather_nearby/core/http/response/handled_response.dart';
+import 'package:weather_nearby/core/http/response/response_error.dart';
 import 'package:weather_nearby/features/main_screen/data/models/request/weather_request_param.dart';
 import 'package:weather_nearby/features/main_screen/data/models/response/whether/weather_data.dart';
 
@@ -17,8 +18,13 @@ class WeatherRepository {
         '/forecast',
         queryParameters: requestParam.toMap(),
       );
+
+      var handledResponse = HandledResponse.fromDioResult(response);
+      if (handledResponse.isSuccess && response.data['cod'] != 200) {
+        handledResponse = ForbiddenError();
+      }
       return ComplexResponse.converted(
-        HandledResponse.fromDioResult(response),
+        handledResponse,
         converter: (data) => (data['list'] as List)
             .map(
               (e) => WeatherData.fromJson(e as Map<String, dynamic>),
@@ -30,7 +36,7 @@ class WeatherRepository {
     }
   }
 
-  Future<ComplexResponse<WeatherData>> getWeatherNow(
+  Future<ComplexResponse<WeatherData>> getCurrentWeather(
     WeatherRequestParam requestParam,
   ) async {
     try {
@@ -38,6 +44,10 @@ class WeatherRepository {
         '/weather',
         queryParameters: requestParam.toMap(),
       );
+      var handledResponse = HandledResponse.fromDioResult(response);
+      if (handledResponse.isSuccess && response.data['cod'] != 200) {
+        handledResponse = ForbiddenError();
+      }
       return ComplexResponse.converted(
         HandledResponse.fromDioResult(response),
         converter: (data) => WeatherData.fromJson(response.data),

@@ -7,7 +7,12 @@ import 'package:weather_nearby/core/http/interceptors/lang_interceptor.dart';
 import 'package:weather_nearby/core/http/interceptors/log_interceptor.dart';
 import 'package:weather_nearby/core/localization/country_strings.dart';
 import 'package:weather_nearby/core/localization/string_provider.dart';
+import 'package:weather_nearby/core/mapper/data_mapper.dart';
+import 'package:weather_nearby/features/data/mapper/weather_request_mapper.dart';
+import 'package:weather_nearby/features/data/models/requesting_location.dart';
+import 'package:weather_nearby/features/main_screen/data/models/request/weather_request_param.dart';
 import 'package:weather_nearby/features/main_screen/data/weather_repository.dart';
+import 'package:weather_nearby/features/main_screen/presentation/weather_bloc.dart';
 import 'package:weather_nearby/features/user_settings/data/user_settings_repository.dart';
 import 'package:weather_nearby/flavor/environment.dart';
 
@@ -34,8 +39,13 @@ Future<void> setupLocator(Environment environment) async {
     ));
 
   await locator.get<GetStorage>().initStorage;
+  await _initMappers();
   await _initRepositories();
   await _initBlocs();
+}
+
+Future<void> _initMappers() async {
+  locator.registerSingleton<DataMapper<WeatherRequestParam, RequestingLocation>>(WeatherRequestMapper());
 }
 
 Future<void> _initRepositories() async {
@@ -48,4 +58,9 @@ Future<void> _initRepositories() async {
         ));
 }
 
-Future<void> _initBlocs() async {}
+Future<void> _initBlocs() async {
+  locator.registerFactory(() => WeatherBloc(
+        weatherRepository: locator.get(),
+        weatherRequestParamMapper: locator.get(),
+      ));
+}

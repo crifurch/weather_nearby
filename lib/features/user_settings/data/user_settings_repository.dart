@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:get_storage/get_storage.dart';
-import 'package:weather_nearby/features/user_settings/data/models/localization.dart';
-import 'package:weather_nearby/features/user_settings/data/models/requesting_location.dart';
+import 'package:weather_nearby/features/data/models/localization.dart';
+import 'package:weather_nearby/features/data/models/requesting_location.dart';
 
 class UserSettingsRepository {
   static const _localeKey = 'locale';
