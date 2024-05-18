@@ -1,3 +1,8 @@
 {
-
+  "feel_like":"Feel like %s",
+  "lang": {
+    "ru": "ru",
+    "en": "en"
+  },
+  "now": "now"
 }

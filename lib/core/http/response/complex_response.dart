@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:meta/meta.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'handled_response.dart';
 import 'server_response.dart';

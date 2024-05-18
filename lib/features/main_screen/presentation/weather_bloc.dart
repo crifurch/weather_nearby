@@ -1,5 +1,5 @@
-import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:weather_nearby/core/mapper/data_mapper.dart';
 import 'package:weather_nearby/features/data/models/requesting_location.dart';
@@ -26,6 +26,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     on<WeatherEvent>(
       (event, emit) => event.when<Future<void>>(
         loadData: (location) => _loadData(location, emit),
+        updateAll: () => _updateAll(emit),
         updateCurrentWeather: () => _updateCurrentWeather(emit),
       ),
     );
@@ -38,11 +39,21 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
           location: 'Минск',
         );
     emit(state.copyWith(
-      isLoading: state.requestingLocation != requestingLocation,
+      isLoading: true,
       requestingLocation: requestingLocation,
     ));
+    await _updateAll(emit);
+    emit(state.copyWith(
+      isLoading: false,
+    ));
+  }
+
+  Future<void> _updateAll(Emitter<WeatherState> emit) async {
+    if (state.requestingLocation == null) {
+      return;
+    }
     final forecastResponse = await _weatherRepository.getForecast(
-      _weatherRequestParamMapper.mapToSecond(requestingLocation),
+      _weatherRequestParamMapper.mapToSecond(state.requestingLocation!),
     );
     if (forecastResponse.isSuccess) {
       final forecast = forecastResponse.castedData!;

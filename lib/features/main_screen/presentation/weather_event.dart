@@ -6,5 +6,7 @@ class WeatherEvent with _$WeatherEvent {
     RequestingLocation? location,
   }) = _LoadData;
 
+  const factory WeatherEvent.updateAll() = _UpdateAll;
+
   const factory WeatherEvent.updateCurrentWeather() = _UpdateCurrentWeather;
 }

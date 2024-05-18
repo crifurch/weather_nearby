@@ -8,11 +8,10 @@ typedef ResponseErrorFactory = ResponseError Function({
 
 class ResponseError extends HandledResponse {
   const ResponseError._(
-    int code, {
+    super.code, {
     super.friendlyMessage = '',
     super.error = '',
-  })  : assert(code < 200 || code > 204),
-        super(code);
+  })  : assert(code < 200 || code > 204);
 
   factory ResponseError.fromCode(
     int code, {

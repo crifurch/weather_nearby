@@ -3,14 +3,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:weather_nearby/core/localization/translation_service.dart';
+import 'package:weather_nearby/core/localization/translations_keys.dart';
+import 'package:weather_nearby/core/widgets/simple/basic_text.dart';
 import 'package:weather_nearby/features/main_screen/data/models/response/whether/weather_data.dart';
 
 class WeatherSmallView extends StatelessWidget {
   final WeatherData weatherData;
+  final bool isCurrent;
 
   const WeatherSmallView({
     super.key,
     required this.weatherData,
+    this.isCurrent = false,
   });
 
   @override
@@ -20,8 +24,12 @@ class WeatherSmallView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                context.dateFormatter.hhmm.format(weatherData.dateTime.toLocal()),
+              BasicText(
+                isCurrent
+                    ? context.translate(TranslationsKeys.now)
+                    : context.dateFormatter.hhmm.format(weatherData.dateTime.toLocal()),
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
                 textAlign: TextAlign.center,
               ),
               Expanded(
@@ -36,7 +44,7 @@ class WeatherSmallView extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
+              BasicText(
                 weatherData.weather.first.description,
                 textAlign: TextAlign.center,
               ),

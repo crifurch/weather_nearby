@@ -21,7 +21,7 @@ class WeatherRepository {
 
       var handledResponse = HandledResponse.fromDioResult(response);
       if (handledResponse.isSuccess && response.data['cod'] != '200') {
-        handledResponse = ForbiddenError();
+        handledResponse = const ForbiddenError();
       }
       return ComplexResponse.converted(
         handledResponse,
@@ -46,7 +46,7 @@ class WeatherRepository {
       );
       var handledResponse = HandledResponse.fromDioResult(response);
       if (handledResponse.isSuccess && response.data['cod'] != '200') {
-        handledResponse = ForbiddenError();
+        handledResponse = const ForbiddenError();
       }
       return ComplexResponse.converted(
         HandledResponse.fromDioResult(response),

@@ -14,7 +14,7 @@ class UserSettingsRepository {
     required GetStorage prefs,
   }) : _prefs = prefs;
 
-  void set locale(LocalizationsEnum locale) => _prefs.write(
+  set locale(LocalizationsEnum locale) => _prefs.write(
         _localeKey,
         locale.name,
       );
@@ -26,7 +26,7 @@ class UserSettingsRepository {
     );
   }
 
-  void set location(RequestingLocation? location) => _prefs.write(
+  set location(RequestingLocation? location) => _prefs.write(
         _locationKey,
         location == null ? null : jsonEncode(location.toJson()),
       );
