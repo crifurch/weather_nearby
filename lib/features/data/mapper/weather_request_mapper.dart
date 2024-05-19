@@ -11,7 +11,7 @@ class WeatherRequestMapper extends DataMapper<WeatherRequestParam, RequestingLoc
     if (value.query != null) {
       location = value.query!;
     } else if (value.lat != null && value.lon != null) {
-      location = '$value.lat:$value.lon';
+      location = '${value.lat}:${value.lon}';
     } else if (value.cityId != null) {
       location = value.cityId.toString();
     } else {
@@ -26,7 +26,12 @@ class WeatherRequestMapper extends DataMapper<WeatherRequestParam, RequestingLoc
     try {
       if (location.contains(':')) {
         final parts = location.split(':');
-        return WeatherRequestParam.coords(lat: double.parse(parts[0]), lon: double.parse(parts[1]));
+        return WeatherRequestParam.coords(
+          lat: double.parse(parts[0].replaceFirst(',', '.')),
+          lon: double.parse(
+            parts[1].replaceFirst(',', '.'),
+          ),
+        );
       }
     } on Exception {
       //ignore

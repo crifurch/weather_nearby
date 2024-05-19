@@ -106,8 +106,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       await _updateCurrentWeather(emit);
     } else {
       emit(state.copyWith(
-        forecastWeather: forecastResponse.code == 404 ? {} : state.forecastWeather,
-        locationParams: forecastResponse.code == 404 ? null : state.locationParams,
+        forecastWeather: _shouldClearData(forecastResponse.code) ? {} : state.forecastWeather,
+        locationParams: _shouldClearData(forecastResponse.code) ? null : state.locationParams,
       ));
     }
     emit(state.copyWith(
@@ -126,7 +126,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     );
     final whetherResponse = currentWeatherResponse.castedData;
     emit(state.copyWith(
-      currentWeather: currentWeatherResponse.code == 404 ? null : whetherResponse?.weatherData ?? state.currentWeather,
+      currentWeather: _shouldClearData(currentWeatherResponse.code) ? null : whetherResponse?.weatherData ?? state.currentWeather,
       locationParams: LocationParams(
         cityName: whetherResponse?.cityName ?? state.locationParams?.cityName,
         coords: whetherResponse?.coord ?? state.locationParams?.coords,
@@ -155,6 +155,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     return super.close();
   }
 
+  bool _shouldClearData(int code)=> code == 404 || code == 400;
   void _debounceAutoUpdate() {
     _timer?.cancel();
     _timer = Timer(const Duration(minutes: 15), () => add(const WeatherEvent.updateAll()));
