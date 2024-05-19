@@ -3,14 +3,15 @@ import 'package:weather_nearby/core/http/response/complex_response.dart';
 import 'package:weather_nearby/core/http/response/handled_response.dart';
 import 'package:weather_nearby/core/http/response/response_error.dart';
 import 'package:weather_nearby/features/main_screen/data/models/request/weather_request_param.dart';
-import 'package:weather_nearby/features/main_screen/data/models/response/whether/weather_data.dart';
+import 'package:weather_nearby/features/main_screen/data/models/response/api_forecast_response.dart';
+import 'package:weather_nearby/features/main_screen/data/models/response/api_whether_response.dart';
 
 class WeatherRepository {
   final Dio _client;
 
   const WeatherRepository({required Dio client}) : _client = client;
 
-  Future<ComplexResponse<List<WeatherData>>> getForecast(
+  Future<ComplexResponse<ApiForecastResponse>> getForecast(
     WeatherRequestParam requestParam,
   ) async {
     try {
@@ -25,18 +26,14 @@ class WeatherRepository {
       }
       return ComplexResponse.converted(
         handledResponse,
-        converter: (data) => (data['list'] as List)
-            .map(
-              (e) => WeatherData.fromJson(e as Map<String, dynamic>),
-            )
-            .toList(),
+        converter: ApiForecastResponse.fromJson,
       );
     } on Exception catch (error) {
       return ComplexResponse.fromException(error);
     }
   }
 
-  Future<ComplexResponse<WeatherData>> getCurrentWeather(
+  Future<ComplexResponse<ApiWhetherResponse>> getCurrentWeather(
     WeatherRequestParam requestParam,
   ) async {
     try {
@@ -50,7 +47,7 @@ class WeatherRepository {
       }
       return ComplexResponse.converted(
         HandledResponse.fromDioResult(response),
-        converter: (data) => WeatherData.fromJson(response.data),
+        converter: ApiWhetherResponse.fromJson,
       );
     } on Exception catch (error) {
       return ComplexResponse.fromException(error);

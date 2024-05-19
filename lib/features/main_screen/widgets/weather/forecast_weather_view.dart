@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:weather_nearby/core/widgets/decoration/card_decoration.dart';
 import 'package:weather_nearby/core/widgets/layout/limited_aspect_ratio.dart';
-import 'package:weather_nearby/features/main_screen/data/models/response/whether/weather_data.dart';
+import 'package:weather_nearby/features/main_screen/data/models/response/weather/weather_data.dart';
+import 'package:weather_nearby/features/main_screen/widgets/weather/weather_forecast_carousel.dart';
 import 'package:weather_nearby/features/main_screen/widgets/weather/weather_large_view.dart';
-import 'package:weather_nearby/features/main_screen/widgets/weather/whether_forecast_carousel.dart';
 
 class ForecastWeatherView extends StatefulWidget {
   final List<WeatherData> forecastWeatherData;
   final WeatherData? currentWeatherData;
+  final WeatherAdditionalDetails? additionalDetails;
 
   const ForecastWeatherView({
     super.key,
     required this.forecastWeatherData,
     this.currentWeatherData,
+    this.additionalDetails,
   });
 
   @override
@@ -41,9 +43,9 @@ class _ForecastWeatherViewState extends State<ForecastWeatherView> {
           if (_current != null)
             CardDecoration(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.all(8),
                 child: LimitedAspectRatio(
-                  aspectRatio: 2,
+                  aspectRatio: 1.2,
                   minWidth: 200,
                   minHeight: 200,
                   maxWidth: 1300,
@@ -52,6 +54,7 @@ class _ForecastWeatherViewState extends State<ForecastWeatherView> {
                     child: WeatherLargeView(
                       weatherData: _current!,
                       isCurrent: _current == widget.currentWeatherData,
+                      additionalDetails: widget.additionalDetails,
                     ),
                   ),
                 ),
@@ -60,6 +63,7 @@ class _ForecastWeatherViewState extends State<ForecastWeatherView> {
           if (widget.forecastWeatherData.isNotEmpty)
             LimitedAspectRatio(
               maxHeight: 150,
+              minHeight: 100,
               maxWidth: 1300,
               aspectRatio: 4.5,
               //fix flutter render glitch

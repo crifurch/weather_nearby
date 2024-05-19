@@ -5,10 +5,13 @@ import 'package:weather_nearby/core/localization/translation_service.dart';
 import 'package:weather_nearby/core/locator/locator.dart';
 import 'package:weather_nearby/core/widgets/layout/limited_aspect_ratio.dart';
 import 'package:weather_nearby/features/data/models/localization.dart';
-import 'package:weather_nearby/features/main_screen/data/models/response/whether/weather_data.dart';
+import 'package:weather_nearby/features/data/models/requesting_location.dart';
+import 'package:weather_nearby/features/main_screen/data/models/response/weather/weather_data.dart';
 import 'package:weather_nearby/features/main_screen/presentation/weather_bloc.dart';
+import 'package:weather_nearby/features/main_screen/widgets/loading_card.dart';
 import 'package:weather_nearby/features/main_screen/widgets/title_bar/app_title_bar.dart';
 import 'package:weather_nearby/features/main_screen/widgets/weather/forecast_weather_view.dart';
+import 'package:weather_nearby/features/main_screen/widgets/weather/weather_large_view.dart';
 import 'package:weather_nearby/features/user_settings/data/user_settings_repository.dart';
 
 class MainScreen extends StatefulWidget {
@@ -23,11 +26,12 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final _weatherBloc = locator.get<WeatherBloc>();
   final _userSettingsRepository = locator.get<UserSettingsRepository>();
+  final _langFieldFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _weatherBloc.add(const WeatherEvent.loadData());
+    _weatherBloc.add(const WeatherEvent.init());
   }
 
   @override
@@ -58,16 +62,31 @@ class _MainScreenState extends State<MainScreen> {
                       maxWidth: 1700,
                       child: AppTitleBar(
                         onLangChanged: _onLangChanged,
+                        langFieldFocusNode: _langFieldFocusNode,
+                        onLocationSearch: _onLocationChanged,
+                        initLocation: _userSettingsRepository.location.location,
+                        onUpdate: () => _weatherBloc.add(const WeatherEvent.updateAll()),
+                        isLoading: state.isLoading,
                       ),
                     ),
-                    if (state.isLoading)
-                      const Center(
-                        child: CircularProgressIndicator(),
+                    if (forecast.isEmpty)
+                      LoadingCard(
+                        isLoading: state.isLoading,
+                        onReloadClick: () => _weatherBloc.add(const WeatherEvent.updateAll()),
+                        onChangeLocationClick: _langFieldFocusNode.requestFocus,
+                        location: state.requestingLocation,
                       )
                     else
                       ForecastWeatherView(
                         forecastWeatherData: forecast,
                         currentWeatherData: state.currentWeather,
+                        additionalDetails: WeatherAdditionalDetails(
+                          lat: state.locationParams?.coords?.lat,
+                          lon: state.locationParams?.coords?.lon,
+                          cityName: state.locationParams?.cityName ?? state.requestingLocation?.location,
+                          lastUpdateUTC: state.lastUpdateTime,
+                          latsLocationUpdateUTC: state.requestingLocation?.updatedTimeUTC,
+                        ),
                       ),
                   ],
                 ),
@@ -77,9 +96,22 @@ class _MainScreenState extends State<MainScreen> {
         ),
       );
 
+  void _onLocationChanged(String value) {
+    if (_weatherBloc.state.requestingLocation?.location == value) {
+      return;
+    }
+    _weatherBloc.add(WeatherEvent.loadData(location: RequestingLocation(location: value)));
+  }
+
   Future<void> _onLangChanged(LocalizationsEnum lang) async {
     _userSettingsRepository.locale = lang;
     TranslationService.of(context).countryStrings = await lang.toCountryStrings();
-    _weatherBloc.add(const WeatherEvent.loadData());
+    _weatherBloc.add(const WeatherEvent.updateAll());
+  }
+
+  @override
+  void dispose() {
+    _langFieldFocusNode.dispose();
+    super.dispose();
   }
 }

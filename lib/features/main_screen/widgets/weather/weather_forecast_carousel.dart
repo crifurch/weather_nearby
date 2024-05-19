@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weather_nearby/core/app_colors.dart';
 import 'package:weather_nearby/core/utils/scroll_behavior.dart';
 import 'package:weather_nearby/core/widgets/decoration/card_decoration.dart';
-import 'package:weather_nearby/features/main_screen/data/models/response/whether/weather_data.dart';
+import 'package:weather_nearby/features/main_screen/data/models/response/weather/weather_data.dart';
 import 'package:weather_nearby/features/main_screen/widgets/weather/weather_small_view.dart';
 
 class WeatherForecastCarousel extends StatefulWidget {

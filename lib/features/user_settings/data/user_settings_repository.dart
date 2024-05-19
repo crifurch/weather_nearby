@@ -31,10 +31,12 @@ class UserSettingsRepository {
         location == null ? null : jsonEncode(location.toJson()),
       );
 
-  RequestingLocation? get location {
+  RequestingLocation get location {
     final read = _prefs.read<String>(_locationKey);
     if (read == null) {
-      return null;
+      return location = RequestingLocation(
+        location: 'Minsk',
+      );
     }
     return RequestingLocation.fromJson(jsonDecode(read));
   }

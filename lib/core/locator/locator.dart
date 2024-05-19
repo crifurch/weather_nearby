@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:logger/logger.dart';
+import 'package:weather_nearby/core/cache/cache_store.dart';
 import 'package:weather_nearby/core/http/dio.dart';
 import 'package:weather_nearby/core/http/interceptors/apikey_interceptor.dart';
 import 'package:weather_nearby/core/http/interceptors/lang_interceptor.dart';
@@ -26,6 +27,7 @@ Future<void> setupLocator(Environment environment) async {
     ..registerSingleton<StringProvider>(
       StringProvider(CountryStrings('en', {})),
     )
+    ..registerSingleton(CacheStore())
 
     ///register http layer
     ..registerSingleton(PrettyDioLogInterceptor(locator.get()))
@@ -62,5 +64,7 @@ Future<void> _initBlocs() async {
   locator.registerFactory(() => WeatherBloc(
         weatherRepository: locator.get(),
         weatherRequestParamMapper: locator.get(),
+        userSettingsRepository: locator.get(),
+        cacheStore: locator.get(),
       ));
 }

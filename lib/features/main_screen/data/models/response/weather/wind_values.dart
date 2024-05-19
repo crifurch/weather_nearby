@@ -6,8 +6,7 @@ part 'wind_values.g.dart';
 class WindValues {
   final double speed;
   final double deg;
-
-  final double gust;
+  final double? gust;
 
   WindValues({
     required this.speed,

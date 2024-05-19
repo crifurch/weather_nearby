@@ -7,6 +7,8 @@ class WeatherState with _$WeatherState {
     WeatherData? currentWeather,
     @Default({}) Map<int, List<WeatherData>> forecastWeather,
     RequestingLocation? requestingLocation,
+    LocationParams? locationParams,
+    DateTime? lastUpdateTime,
   }) = _WeatherState;
 }
 

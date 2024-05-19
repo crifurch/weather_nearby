@@ -6,11 +6,8 @@ class CountryStrings {
 
   CountryStrings(this.code, this._localesMap);
 
-  // ignore: type_annotate_public_apis
-  String translate(String key, [var args]) {
+  T? get<T>(String key) {
     Map<String, dynamic>? localesMap = _localesMap;
-    var result = '$key(null)';
-
     final split = key.split('.');
     if (split.length > 1) {
       for (var i = 0; i < split.length - 1; i++) {
@@ -19,7 +16,19 @@ class CountryStrings {
       }
     }
     final lastKey = split.last;
-    result = localesMap?[lastKey] ?? result;
+    var result = localesMap?[lastKey];
+    if (result is List) {
+      result = result.toList();
+    }
+    return result is T ? result : null;
+  }
+
+  // ignore: type_annotate_public_apis
+  String translate(String key, [var args]) {
+    var result = get<String>(key);
+    if (result == null) {
+      return '$key(null)';
+    }
     if (args != null) {
       result = args is List ? sprintf(result, args) : sprintf(result, [args]);
     }

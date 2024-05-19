@@ -12,10 +12,12 @@ class LanguageSwitch extends StatelessWidget {
     LocalizationsEnum.ru: TranslationsKeys.langRu,
   };
   final OnLangChangedCallback? onLangChanged;
+  final bool enabled;
 
   const LanguageSwitch({
     super.key,
     this.onLangChanged,
+    this.enabled = true,
   });
 
   @override
@@ -30,7 +32,7 @@ class LanguageSwitch extends StatelessWidget {
           color: AppColors.secondary,
         ),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(
@@ -44,11 +46,11 @@ class LanguageSwitch extends StatelessWidget {
                       color: isCurrentVal ? Colors.white : Colors.transparent,
                     ),
                     child: MouseRegion(
-                      cursor: isCurrentVal ? MouseCursor.defer : SystemMouseCursors.click,
+                      cursor: isCurrentVal && enabled ? MouseCursor.defer : SystemMouseCursors.click,
                       child: GestureDetector(
-                        onTap: isCurrentVal ? null : () => onLangChanged?.call(_locales.keys.elementAt(index)),
+                        onTap: isCurrentVal && enabled ? null : () => onLangChanged?.call(_locales.keys.elementAt(index)),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+                          padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 6),
                           child: Center(
                             child: FittedBox(
                               child: BasicText(

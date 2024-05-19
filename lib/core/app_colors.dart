@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 mixin AppColors {
@@ -11,4 +9,5 @@ mixin AppColors {
   //text
   static const textPrimary = Colors.black;
   static const textSecondary = Colors.white;
+  static const textAction = Colors.orange;
 }

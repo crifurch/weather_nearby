@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_strategy/url_strategy.dart';
+import 'package:weather_nearby/core/app_colors.dart';
 import 'package:weather_nearby/core/localization/string_provider.dart';
 import 'package:weather_nearby/core/localization/translation_service.dart';
 import 'package:weather_nearby/core/locator/locator.dart';
@@ -34,6 +35,12 @@ class MyApp extends StatelessWidget {
         child: GetMaterialApp(
           debugShowCheckedModeBanner: false,
           initialRoute: MainScreen.routeName,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: AppColors.secondary,
+              brightness: Brightness.dark,
+            ),
+          ),
           routes: {
             MainScreen.routeName: (context) => const MainScreen(),
           },
